@@ -1,0 +1,27 @@
+#!/bin/bash
+title=$(xwininfo -root -tree|grep Spotify|sed -r 's/^[^\"]*\"([^\"]*)\".*$/\1/;s/\xe2\x80\x93/-/g;s/^Spotify - //;s/\ $//');
+isblacklisted=false;
+if [ $(cat ~/.spotify-blacklist|(while read a; do if [ "a$a" == "a$title" ]; then echo BLACKLISTED; fi; done)| grep -c "") -gt 0 ]; 
+then isblacklisted=true; fi;
+if [ "$isblacklisted" == "true" ]; then
+ if [ "$(cat ~/.spotify-state)" != "muted" ]; then
+  echo $(date) 'Commercial muted:                     '"$title";
+  (amixer set PCM '0%';
+   amixer set Master '0%';
+   sleep 10;
+   amixer set PCM '3%';
+   amixer set Master '3%';
+   sleep 2;
+  ) > /dev/null;
+  echo "muted" > ~/.spotify-state
+ fi;
+fi;
+if [ "$isblacklisted" == "false" ] ; then
+ if [ "$(cat ~/.spotify-state)" != "unmuted" ] ; then
+  (amixer set PCM '81%';amixer set Master '81%';) > /dev/null;
+  echo $(date) 'Commercial done, unmuting for song:   '"$title";
+  echo "unmuted" > ~/.spotify-state
+ fi;
+fi;
+sleep .3
+exec $0
