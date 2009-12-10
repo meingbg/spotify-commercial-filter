@@ -1,0 +1,7 @@
+This is is small utility to choose what commercials you want to hear 
+when using the free version of the Spotify music service. When 
+Spotify is playing, have spotify-filter-commercial-breaks running at 
+the same time. When you hear a commercial that you dislike, run 
+spotify-blacklist (preferrably create a launcher/shortcut to this 
+script). Whenever Spotify plays a disliked commercial this utility 
+will automatically mute the speakers until it's over.
